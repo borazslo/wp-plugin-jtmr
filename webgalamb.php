@@ -149,19 +149,18 @@ function jtmr_webgalamb_shortcode($atts, $content=null){
 	
 	if(isset($_POST['wg-sub'])) {
 		if(!$wg->validateForm()) {
-			foreach($wg->errorMessages as $er) echo '			
+			$return = '';
+			foreach($wg->errorMessages as $er) $return .= '			
 			<!--<div id="setting-error-settings_updated" class="notice notice-success settings-error is-dismissible">:)</div>-->			
 			<div class="alert alert-primary" role="alert">'.$er.'</div>';
-			$wg->formHtml();
+			return $return .= $wg->formHtml();
 		} else {
 			$wg->sendSubscriptions();
 		}
 	} else {
-		$wg->formHtml();
-	}
-	
-	
-    return true;
+		return $wg->formHtml();
+	}	
+    return;
   }
 
 
@@ -183,8 +182,9 @@ class Webgalamb {
 	
 	function __construct() {
 		$options = get_option('jtmr_webgalamb');
-		$this->apiToken = $options['token'];
-		$this->apiSecret = $options['key'];
+		
+		$this->apiToken = isset($options['token']) ? $options['token'] : '';
+		$this->apiSecret = isset($options['key']) ? $options['key'] : '';
 
 	
 		$this->initFields();
@@ -212,55 +212,57 @@ class Webgalamb {
 	
 	function formHtml() {
 	
+		$return = '';
+	
 		//TODO leellenőrzini, hogy okés a minden beállítás!//
 		$options = get_option('jtmr_webgalamb');
 		if( !isset($options['token']) OR $options['token'] == '' OR !isset($options['key']) OR $options['key'] == '' ) {
-			echo "<div><strong><font color='res'>Nincs beállítvan webgalamb token és key, így nem tudunk mit csinálni!</font></strong></div>";
+			$return .= "<div><strong><font color='res'>Nincs beállítvan webgalamb token és key, így nem tudunk mit csinálni!</font></strong></div>";
 			return;
 		}
 	  
-		echo '<form action="' . esc_url( $_SERVER['REQUEST_URI'] ) . '" method="post" >';
+		$return .= '<form action="' . esc_url( $_SERVER['REQUEST_URI'] ) . '" method="post" >';
 		
-		echo '<table border="0" cellspacing="0" cellpadding="4">
+		$return .= '<table border="0" cellspacing="0" cellpadding="4">
 		<tbody>';
 		
 		//Webgalamb felirakozási lehetőségek listája		
 		foreach($this->groups as $group) {
-			echo "<tr><td><input type='checkbox' name='wg-groups[]' value='".$group[0]."' "; 
+			$return .= "<tr><td><input type='checkbox' name='wg-groups[]' value='".$group[0]."' "; 
 			if( ( isset($_POST['wg-groups']) AND in_array($group[0],$_POST['wg-groups']) ) 
-				OR ( $group[0] == $this->defaultGroup) ) echo " checked ";
-			echo "></td>";
-			echo "<td>";
-			if(  $group[0] == $this->defaultGroup) echo "<strong>".$group[1]."</strong>";
-			else echo $group[1];
+				OR ( $group[0] == $this->defaultGroup) ) $return .= " checked ";
+			$return .= "></td>";
+			$return .= "<td>";
+			if(  $group[0] == $this->defaultGroup) $return .= "<strong>".$group[1]."</strong>";
+			else $return .= $group[1];
 			
-			echo "<br/><small>".$group[2]."</small></td></tr>";
+			$return .= "<br/><small>".$group[2]."</small></td></tr>";
 		}
 		
 		//Webgalamb mezők kitöltése	
 		foreach($this->fields as $name => $field) {
-			echo "<tr>";
-			echo "<td>".$field[0].":";
+			$return .= "<tr>";
+			$return .= "<td>".$field[0].":";
 			
 			if ( isset($field[2]) AND $field[2] == "required") 
-				echo " <font color='red' title='Ennek a mezőnek a kitöltése kötelező!'>*</font>";
+				$return .= " <font color='red' title='Ennek a mezőnek a kitöltése kötelező!'>*</font>";
 			
-			echo"</td>";
-			echo "<td>";
+			$return .="</td>";
+			$return .= "<td>";
 			
 			if($field[1] == 'select') {
-				echo "<select name='wg-".$name."'>";
+				$return .= "<select name='wg-".$name."'>";
 				if(isAssoc($field[5])) $isAssoc = true; else $isAssoc = false;
 				foreach( $field[5] as $selectValue => $selectName) {				
 					if($isAssoc == false) $selectValue = $selectName;
-					echo "<option value='".$selectValue."' "; 
-					if(isset($_POST["wg-".$name]) AND $selectValue == $_POST["wg-".$name]) echo "selected";
-					echo ">".$selectName."</option>\n";
+					$return .= "<option value='".$selectValue."' "; 
+					if(isset($_POST["wg-".$name]) AND $selectValue == $_POST["wg-".$name]) $return .= "selected";
+					$return .= ">".$selectName."</option>\n";
 				}
-				echo "</select>";
+				$return .= "</select>";
 				
 			} else {
-				echo "<input 
+				$return .= "<input 
 				type='".$field[1]."' 
 				name='wg-".$name."' 
 				". ( isset($field[2]) ? " ".$field[2] : "" ) ." 
@@ -268,17 +270,19 @@ class Webgalamb {
 				value='". ( isset( $_POST["wg-".$name] ) ? esc_attr( $_POST["wg-".$name] ) : '' )."'>";
 			}
 				
-			echo "</td>";
-			echo "</tr>";
+			$return .= "</td>";
+			$return .= "</tr>";
 		
 			
 		}
 		
-		echo "<tr><td><input type='checkbox' name='wg-gdpr' value='elfogadom'> Elfogadom</td><td>Elolvastam, elfogadtam. Örülök neked. Avagy a GDPR kompatibilitás</td></tr>";
+		$return .= "<tr><td><input type='checkbox' name='wg-gdpr' value='elfogadom'> Elfogadom</td><td>Elolvastam, elfogadtam. Örülök neked. Avagy a GDPR kompatibilitás</td></tr>";
 		
-		echo '</table>';
-		echo '<input type="submit" name="wg-sub" value="Feliratkozás"/>';
-		echo '</form>';
+		$return .= '</table>';
+		$return .= '<input type="submit" name="wg-sub" value="Feliratkozás"/>';
+		$return .= '</form>';
+		
+		return $return;
 	}
 	
 	public function validateForm() {

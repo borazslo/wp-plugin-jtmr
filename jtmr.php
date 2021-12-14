@@ -2,7 +2,7 @@
 /**
  * Plugin Name: JTMR features
  * Description: A magyar jezsuitákhoz kapcsolódó honlapokban közös egyedi lehetőségek
- * Version: 0.1.3
+ * Version: 0.1.4
  * Requires at least: 4.0
  * Requires PHP: 5.6
  * Author: Elek László SJ
