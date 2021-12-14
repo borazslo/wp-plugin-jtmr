@@ -1,2 +1,2 @@
-# wp-plugin-jtmr
-JTMR (magyar jezsuiták) specifikus remek dolgok egyetlen pluginban
+# wp-pluging-staging
+ Copy a full WP within the server so as to make a staging website
