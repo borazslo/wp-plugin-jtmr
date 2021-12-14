@@ -2,14 +2,22 @@
 /**
  * Plugin Name: JTMR features
  * Description: A magyar jezsuitákhoz kapcsolódó honlapokban közös egyedi lehetőségek
- * Version: 0.1
+ * Version: 0.1.2
  * Requires at least: 4.0
  * Requires PHP: 5.6
  * Author: Elek László SJ
  * Text Domain: JTMR
  */
  
- 
+require 'plugin-update-checker-4.11/plugin-update-checker.php';
+$myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
+	'https://github.com/borazslo/wp-plugin-jtmr',
+	__FILE__, //Full path to the main plugin file or functions.php.
+	'jezsuitak-theme'
+);
+//Set the branch that contains the stable release.
+$myUpdateChecker->setBranch('main');
+
  class Webgalamb {
 	//https://www.webgalamb.hu/wg8plus-sugo/?page=rest-api
 	private $apiPath = 'restclient.wg.class.php';
