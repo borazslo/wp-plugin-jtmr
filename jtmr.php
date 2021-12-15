@@ -2,7 +2,7 @@
 /**
  * Plugin Name: JTMR features
  * Description: A magyar jezsuitákhoz kapcsolódó honlapokban közös egyedi lehetőségek
- * Version: 0.1.4
+ * Version: 0.1.5
  * Requires at least: 4.0
  * Requires PHP: 5.6
  * Author: Elek László SJ
@@ -18,7 +18,7 @@ $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
 //Set the branch that contains the stable release.
 $myUpdateChecker->setBranch('main');
 
-$modules = ['webgalamb'];
+$modules = ['webgalamb','wc_validate_checkout_fields'];
 foreach($modules as $module) 
 	include_once($module.'.php');
 
