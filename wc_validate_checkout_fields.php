@@ -5,7 +5,7 @@ add_action( 'woocommerce_checkout_process', function() {
 	check_ajax_referer( 'woocommerce-process_checkout', 'woocommerce-process-checkout-nonce' );
 
 	
-	wc_add_notice( SURBMA_HC_PLUGIN_DIR, 'error' );
+	//wc_add_notice( SURBMA_HC_PLUGIN_DIR, 'error' );
 	
 	
 	if ( !empty( $_POST['billing_country'] ) && 'HU' == $_POST['billing_country'] && !empty( $_POST['billing_tax_number'] )) {
