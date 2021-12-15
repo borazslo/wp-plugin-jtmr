@@ -73,8 +73,7 @@ jQuery(document).ready(function($){
 		$script = ob_get_contents();
 		ob_end_clean();
 
-	
-wp_register_script( 'myprefix-dummy-js-footer',  '', array("jquery"), '', true ); //Fontos, hogy a cps-jquery-fix elé kerüljön.
+wp_register_script( 'myprefix-dummy-js-footer',  '', array("cps-jquery-fix"), '', true );
 wp_enqueue_script( 'myprefix-dummy-js-footer' );
 wp_add_inline_script( 'myprefix-dummy-js-footer', $script);
 });
